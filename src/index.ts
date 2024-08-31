@@ -6,11 +6,7 @@ import app from './server';
 app.use(morgan('dev'));
 
 app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.urlencoded({ extended: true }));
 
 import loginRouter from './routes/loginRoutes';
 
