@@ -6,17 +6,32 @@ interface RequestWithBody extends Request {
 
 const router = express.Router();
 
+router.get('/', (req: Request, res: Response): Response => {
+  const { loggedIn } = req.cookies;
+
+  if (loggedIn !== 'true') {
+    return res.send(`
+        <div>
+          <div>You are not logged in!</div>
+          <a href="/login">Login</a>
+        </div>
+      `);
+  }
+
+  return res.send('You are logged in');
+});
+
 router.get('/login', (req: Request, res: Response) => {
   res.send(`
       <form method="POST">
         <div>
           <label for="email">Email</label>
-          <input id="email" name="em" />
+          <input id="email" name="email" />
         </div>
 
         <div>
           <label for="password">Password</label>
-          <input id="password" name="pa type="password" />
+          <input id="password" name="password" type="password" />
         </div>
 
         <button>Submit</button>
@@ -24,14 +39,22 @@ router.get('/login', (req: Request, res: Response) => {
     `);
 });
 
-router.post('/login', (req: RequestWithBody, res: Response) => {
-  const { email, password } = req.body;
+router.post(
+  '/login',
+  (req: RequestWithBody, res: Response): Response | void => {
+    const { email, password } = req.body;
 
-  if (email) {
-    res.send(email.toLocaleUpperCase());
-  } else {
-    res.send('Must provide email address!');
+    if (!email || !password) {
+      return res.send('Must provide email address and password');
+    }
+
+    if (email === 'test@email.com' && password === 'password') {
+      res.cookie('loggedIn', true);
+      return res.redirect('/');
+    }
+
+    return res.send('Incorrect email or password');
   }
-});
+);
 
 export default router;
