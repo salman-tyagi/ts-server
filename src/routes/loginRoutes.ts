@@ -22,39 +22,41 @@ const router = express.Router();
 router.get('/', (req: Request, res: Response): Response => {
   if (!req.session?.loggedIn) {
     return res.send(`
-        <div>
-          <div>You are not logged in</div>
-          <a href="/login">Login</a>
-        </div>
-      `);
+      <div>
+        <div>You are not logged in</div>
+        <a href="/login">Login</a>
+      </div>
+    `);
   }
 
   return res.send(`
-      <div>
-        <div>You are logged in</div>
-        <a href="/logout">Logout</a>
-      </div>
-    `);
+    <div>
+      <div>You are logged in</div>
+      <a href="/logout">Logout</a>
+    </div>
+  `);
 });
 
+/*
 router.get('/login', (req: Request, res: Response): Response => {
-  return res.send(`
-      <form method="POST">
-        <div>
-          <label for="email">Email</label>
-          <input id="email" name="email" />
-        </div>
-
-        <div>
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" />
-        </div>
-
-        <button>Submit</button>
-      </form>
-    `);
+return res.send(`
+  <form method="POST">
+    <div>
+      <label for="email">Email</label>
+      <input id="email" name="email" />
+      </div>
+      
+      <div>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+      </div>
+      
+    <button>Submit</button>
+  </form>
+  `);
 });
-
+*/
+  
 router.get('/logout', (req: Request, res: Response): void => {
   req.session = undefined;
   res.redirect('/');
