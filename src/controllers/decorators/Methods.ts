@@ -3,7 +3,7 @@ enum Methods {
   post = 'post',
   patch = 'patch',
   put = 'put',
-  del = 'delete',
+  delete = 'delete',
 }
 
 export default Methods;

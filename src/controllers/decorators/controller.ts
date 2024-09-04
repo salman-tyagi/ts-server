@@ -1,5 +1,10 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 
 import Methods from './Methods';
 import MetadataKeys from './MetadataKeys';
@@ -26,8 +31,44 @@ export function controller(routePrefix: string): Function {
         Reflect.getMetadata(MetadataKeys.middleware, target.prototype, key) ||
         [];
 
+      const validateBodyProps = Reflect.getMetadata(
+        MetadataKeys.validator,
+        target.prototype,
+        key
+      );
+
+      const validateBody = (keys: string[] = []): RequestHandler => {
+        return (
+          req: Request,
+          res: Response,
+          next: NextFunction
+        ): Response | void => {
+          if (!req.body) {
+            return res.status(422).send('Invalid request');
+          }
+
+          keys.forEach(prop => {
+            if (!req.body[prop]) {
+              return res
+                .status(422)
+                .send(
+                  `${prop.at(0)?.toUpperCase()}${prop.slice(1)} is required`
+                );
+            }
+          });
+
+          next();
+          return;
+        };
+      };
+
       if (path) {
-        router[method](`${routePrefix}${path}`, ...middlewares, routeHandler);
+        router[method](
+          `${routePrefix}${path}`,
+          ...middlewares,
+          validateBody(validateBodyProps),
+          routeHandler
+        );
       }
     }
   };
