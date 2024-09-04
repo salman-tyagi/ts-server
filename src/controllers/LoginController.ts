@@ -1,17 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import { get, controller, use, post, bodyValidator } from './decorators';
-
-function logger(req: Request, res: Response, next: NextFunction): void {
-  console.log('Request was made!');
-
-  next();
-  return;
-}
+import { get, controller, post, bodyValidator } from './decorators';
 
 @controller('/auth')
 class LoginController {
+  // Error left for reference
+  @get('/')
+  add(a: number, b: number): number {
+    return a + b;
+  }
+
   @get('/login')
-  @use(logger)
   getLogin(req: Request, res: Response): Response {
     return res.send(`
       <form method="POST">
